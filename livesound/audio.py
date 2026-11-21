@@ -3,7 +3,8 @@
 ``MicSource`` captures from a sound-card input (microphone, mixer feed, USB
 interface) using PortAudio via the ``sounddevice`` package. On Windows this
 works with MME, DirectSound, WASAPI and (if PortAudio was built with it) ASIO
-devices.
+devices; on macOS it uses Core Audio (built-in mic, USB/Thunderbolt interfaces,
+aggregate devices).
 
 ``DemoSource`` generates a synthetic "live room" signal (pink noise with a
 muddy low-mid bump, mains hum, and a slowly building feedback tone) so the
@@ -20,7 +21,7 @@ import time
 
 import numpy as np
 
-try:  # sounddevice needs the PortAudio DLL, which the Windows wheel bundles.
+try:  # sounddevice needs PortAudio, which its Windows and macOS wheels bundle.
     import sounddevice as sd
 
     SD_IMPORT_ERROR: Exception | None = None

@@ -1,0 +1,60 @@
+name: Build apps
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt pyinstaller pytest
+      - name: Run tests
+        run: python -m pytest -q tests
+      - name: Build executable
+        run: python -m PyInstaller --noconfirm --clean LiveSoundAnalyzer.spec
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LiveSoundAnalyzer-windows
+          path: dist/LiveSoundAnalyzer.exe
+
+  macos:
+    runs-on: macos-latest   # Apple silicon (arm64)
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt pyinstaller pytest
+      - name: Run tests
+        run: python -m pytest -q tests
+      - name: Build app bundle
+        run: |
+          python -m PyInstaller --noconfirm --clean LiveSoundAnalyzer.spec
+          codesign --force --deep --sign - "dist/Live Sound Analyzer.app"
+          /usr/libexec/PlistBuddy -c "Print :NSMicrophoneUsageDescription" \
+            "dist/Live Sound Analyzer.app/Contents/Info.plist"
+          ditto -c -k --keepParent "dist/Live Sound Analyzer.app" \
+            dist/LiveSoundAnalyzer-macOS-arm64.zip
+      - name: Smoke test (app starts and keeps running)
+        run: |
+          "dist/Live Sound Analyzer.app/Contents/MacOS/LiveSoundAnalyzer" --demo &
+          PID=$!
+          sleep 15
+          kill -0 $PID   # fails the job if the app crashed on startup
+          kill $PID
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LiveSoundAnalyzer-macOS-arm64
+          path: dist/LiveSoundAnalyzer-macOS-arm64.zip

@@ -1,4 +1,4 @@
-"""Live Sound Analyzer - Windows desktop GUI (PySide6 + pyqtgraph)."""
+"""Live Sound Analyzer - desktop GUI for Windows and macOS (PySide6 + pyqtgraph)."""
 
 from __future__ import annotations
 
@@ -56,6 +56,20 @@ FFT_SIZES = [4096, 8192, 16384, 32768]
 
 FREQ_TICKS = [20, 31.5, 50, 63, 100, 125, 200, 250, 500, 1000, 2000, 4000, 5000, 8000, 10000, 16000, 20000]
 FREQ_TICKS_MAJOR = [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000]
+
+
+def mic_help() -> str:
+    """Where to look when the OS blocks or silences the microphone."""
+    if sys.platform == "darwin":
+        return ("On macOS, open System Settings > Privacy & Security > Microphone and allow "
+                "Live Sound Analyzer (or Terminal, if you started it from Terminal), then "
+                "quit and reopen the app. Also check the input device and level in "
+                "System Settings > Sound > Input.")
+    if sys.platform == "win32":
+        return ("On Windows, open Settings > Privacy & security > Microphone and turn on "
+                "'Let desktop apps access your microphone'. If a device won't open, try the "
+                "same device under another host API ([WASAPI] or [MME]).")
+    return "Check that the input device is enabled and not muted in your sound settings."
 
 
 def _freq_label(f: float) -> str:
@@ -382,9 +396,7 @@ class MainWindow(QtWidgets.QMainWindow):
         except Exception as exc:
             self.source = None
             QtWidgets.QMessageBox.critical(self, "Could not open input",
-                                           f"Could not start audio input:\n\n{exc}\n\n"
-                                           "Try another device / host API (WASAPI or MME), "
-                                           "and check Windows Privacy settings allow microphone access.")
+                                           f"Could not start audio input:\n\n{exc}\n\n{mic_help()}")
             self.start_btn.blockSignals(True)
             self.start_btn.setChecked(False)
             self.start_btn.blockSignals(False)
@@ -399,6 +411,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.peak_hold.reset()
         self._last_total = 0
         self._sg_cache = None
+        self._silent_since = time.perf_counter()
+        self._silence_warned = False
         self.start_btn.blockSignals(True)
         self.start_btn.setChecked(True)
         self.start_btn.blockSignals(False)
@@ -457,6 +471,7 @@ class MainWindow(QtWidgets.QMainWindow):
         peak = src.pop_peak()
         peak_db = float(db(peak ** 2))
         t = time.perf_counter()
+        self._check_silence(peak, t)
         power = self.spectrum.power(block)
         self.analyzer.update(power, t, peak_abs=peak, rms_dbfs=rms_db)
         self.meter.set_levels(rms_db, peak_db)
@@ -514,6 +529,21 @@ class MainWindow(QtWidgets.QMainWindow):
         self.sg_data[:-1] = self.sg_data[1:]
         self.sg_data[-1] = row
         self.sg_img.setImage(self.sg_data, autoLevels=False)
+
+    def _check_silence(self, peak: float, t: float) -> None:
+        """Exact digital silence from a real mic almost always means the OS is
+        blocking access (macOS delivers zeros when permission is denied)."""
+        if not isinstance(self.source, MicSource) or peak > 0.0:
+            self._silent_since = t
+            return
+        if not self._silence_warned and t - self._silent_since > 2.5:
+            self._silence_warned = True
+            self.statusBar().showMessage("No signal: the input is delivering pure silence.")
+            QtWidgets.QMessageBox.warning(
+                self, "No audio from the input",
+                "The selected input is delivering complete silence. That usually means the "
+                "operating system is blocking microphone access, or the input is muted.\n\n"
+                + mic_help())
 
     def _update_status(self) -> None:
         a = self.analyzer
