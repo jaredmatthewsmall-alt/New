@@ -1,0 +1,63 @@
+# XcodeGen project definition. On a Mac:
+#   brew install xcodegen && xcodegen      ->  LiveSoundAnalyzer.xcodeproj
+name: LiveSoundAnalyzer
+options:
+  bundleIdPrefix: com.livesound
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+packages:
+  LiveSoundCore:
+    path: LiveSoundCore
+targets:
+  LiveSoundAnalyzer:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+    dependencies:
+      - package: LiveSoundCore
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: Live Sound
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        NSMicrophoneUsageDescription: >-
+          Live Sound listens to the microphone to display the frequency spectrum and
+          suggest EQ and feedback fixes for your live sound. Audio is analyzed on the
+          device and never recorded or sent anywhere.
+        UILaunchScreen: {}
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.livesound.analyzer
+        PRODUCT_NAME: LiveSoundAnalyzer
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGN_STYLE: Automatic
+        # Set your Apple developer team here (or pick it in Xcode > Signing & Capabilities):
+        DEVELOPMENT_TEAM: ""
+schemes:
+  LiveSoundAnalyzer:
+    build:
+      targets:
+        LiveSoundAnalyzer: all
+    run:
+      config: Debug
+    archive:
+      config: Release

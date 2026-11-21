@@ -58,3 +58,48 @@ jobs:
         with:
           name: LiveSoundAnalyzer-macOS-arm64
           path: dist/LiveSoundAnalyzer-macOS-arm64.zip
+
+  ios:
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: ios
+    steps:
+      - uses: actions/checkout@v4
+      - name: Core unit tests
+        run: swift test --package-path LiveSoundCore
+      - name: Generate Xcode project
+        run: |
+          brew install xcodegen
+          xcodegen generate
+      - name: Build for iOS Simulator
+        run: |
+          xcodebuild -project LiveSoundAnalyzer.xcodeproj -scheme LiveSoundAnalyzer \
+            -configuration Debug -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build CODE_SIGNING_ALLOWED=NO build | tail -n 30
+          test "${PIPESTATUS[0]}" -eq 0
+      - name: Build for iPhone (Release, unsigned)
+        run: |
+          xcodebuild -project LiveSoundAnalyzer.xcodeproj -scheme LiveSoundAnalyzer \
+            -configuration Release -destination 'generic/platform=iOS' \
+            -derivedDataPath build-device CODE_SIGNING_ALLOWED=NO build | tail -n 30
+          test "${PIPESTATUS[0]}" -eq 0
+      - name: Run in Simulator with demo signal and take a screenshot
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          devs = json.load(sys.stdin)["devices"]
+          ios = sorted((k for k in devs if "iOS" in k), reverse=True)
+          print(next(d["udid"] for k in ios for d in devs[k] if d["name"].startswith("iPhone")))')
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID"
+          APP=$(find build/Build/Products -name 'LiveSoundAnalyzer.app' -maxdepth 3 | head -1)
+          xcrun simctl install "$UDID" "$APP"
+          xcrun simctl launch "$UDID" com.livesound.analyzer --demo
+          sleep 15
+          xcrun simctl spawn "$UDID" launchctl list | grep -q com.livesound.analyzer  # still running?
+          xcrun simctl io "$UDID" screenshot ../ios-screenshot.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ios-simulator-screenshot
+          path: ios-screenshot.png
