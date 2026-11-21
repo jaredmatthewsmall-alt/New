@@ -248,9 +248,9 @@ class DemoSource(AudioSource):
         t = (self._n + np.arange(frames)) / sr
         self._n += frames
         # Mains hum with 2nd and 3rd harmonics.
-        x += 0.05 * np.sin(2 * np.pi * self.hum_hz * t)
-        x += 0.025 * np.sin(2 * np.pi * 2 * self.hum_hz * t)
-        x += 0.012 * np.sin(2 * np.pi * 3 * self.hum_hz * t)
+        x += 0.08 * np.sin(2 * np.pi * self.hum_hz * t)
+        x += 0.04 * np.sin(2 * np.pi * 2 * self.hum_hz * t)
+        x += 0.02 * np.sin(2 * np.pi * 3 * self.hum_hz * t)
         # Feedback: 14 s cycle, ramps up exponentially for 8 s, then silent.
         cyc = t % 14.0
         amp = np.where(cyc < 8.0, 0.002 * 10 ** (cyc * 1.6 / 8.0), 0.0)

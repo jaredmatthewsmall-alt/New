@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <path android:fillColor="#FF3CB45A" android:pathData="M24.82,82 L24.82,63.80 L28.64,63.80 L28.64,82 Z"/>
+    <path android:fillColor="#FF3CB45A" android:pathData="M30.27,82 L30.27,58.60 L34.09,58.60 L34.09,82 Z"/>
+    <path android:fillColor="#FF3CB45A" android:pathData="M35.73,82 L35.73,53.40 L39.55,53.40 L39.55,82 Z"/>
+    <path android:fillColor="#FFE6A028" android:pathData="M41.18,82 L41.18,49.76 L45.00,49.76 L45.00,82 Z"/>
+    <path android:fillColor="#FFE6A028" android:pathData="M46.64,82 L46.64,51.84 L50.45,51.84 L50.45,82 Z"/>
+    <path android:fillColor="#FF3CB45A" android:pathData="M52.09,82 L52.09,56.00 L55.91,56.00 L55.91,82 Z"/>
+    <path android:fillColor="#FF3CB45A" android:pathData="M57.55,82 L57.55,57.56 L61.36,57.56 L61.36,82 Z"/>
+    <path android:fillColor="#FF3CB45A" android:pathData="M63.00,82 L63.00,59.12 L66.82,59.12 L66.82,82 Z"/>
+    <path android:fillColor="#FF3CB45A" android:pathData="M68.45,82 L68.45,61.20 L72.27,61.20 L72.27,82 Z"/>
+    <path android:fillColor="#FF3CB45A" android:pathData="M73.91,82 L73.91,63.28 L77.73,63.28 L77.73,82 Z"/>
+    <path android:fillColor="#FF3CB45A" android:pathData="M79.36,82 L79.36,65.36 L83.18,65.36 L83.18,82 Z"/>
+    <path android:strokeColor="#FFF04646" android:strokeWidth="1.2" android:pathData="M64.80,26 L64.80,29 M64.80,32 L64.80,35 M64.80,38 L64.80,41 M64.80,44 L64.80,47 M64.80,50 L64.80,53 M64.80,56 L64.80,59 M64.80,62 L64.80,65 M64.80,68 L64.80,71 M64.80,74 L64.80,77 M64.80,80 L64.80,83"/>
+    <path android:strokeColor="#FF50D7FF" android:strokeWidth="2.2" android:strokeLineJoin="round"
+        android:strokeLineCap="round" android:pathData="M24.00,41.44 L25.02,40.99 L26.03,40.62 L27.05,40.38 L28.07,40.34 L29.08,40.52 L30.10,40.94 L31.12,41.59 L32.14,42.44 L33.15,43.45 L34.17,44.55 L35.19,45.68 L36.20,46.75 L37.22,47.70 L38.24,48.48 L39.25,49.04 L40.27,49.36 L41.29,49.45 L42.31,49.32 L43.32,49.02 L44.34,48.61 L45.36,48.15 L46.37,47.73 L47.39,47.40 L48.41,47.24 L49.42,47.28 L50.44,47.56 L51.46,48.07 L52.47,48.81 L53.49,49.73 L54.51,50.79 L55.53,51.91 L56.54,53.02 L57.56,54.05 L58.58,54.94 L59.59,55.63 L60.61,56.10 L61.63,56.32 L62.64,56.32 L63.66,48.77 L64.68,37.12 L65.69,45.27 L66.71,54.87 L67.73,54.48 L68.75,54.21 L69.76,54.12 L70.78,54.26 L71.80,54.63 L72.81,55.24 L73.83,56.06 L74.85,57.05 L75.86,58.14 L76.88,59.26 L77.90,60.35 L78.92,61.33 L79.93,62.14 L80.95,62.75 L81.97,63.11 L82.98,63.24 L84.00,63.15"/>
+</vector>

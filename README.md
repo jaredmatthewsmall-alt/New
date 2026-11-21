@@ -1,4 +1,4 @@
-# Live Sound Analyzer (Windows, macOS & iPhone)
+# Live Sound Analyzer (Windows, macOS, iPhone & Android)
 
 A real-time audio spectrum analyzer for live sound engineers. It captures audio from a
 microphone (or any sound-card input), draws the frequency response live, and **analyzes
@@ -9,6 +9,9 @@ the mix is muddy or harsh, whether there is mains hum, and whether your input ga
 
 > **iPhone / iPad:** a native SwiftUI version with the same analysis engine lives in
 > [`ios/`](ios/README.md). See that README to build and install it with Xcode.
+>
+> **Android (optimized for Galaxy Tab S10 Ultra):** a native Kotlin/Compose version lives in
+> [`android/`](android/README.md). Each push builds an installable APK in GitHub Actions.
 
 ## Features
 
@@ -138,6 +141,7 @@ livesound/analysis.py     detectors + recommendation engine (no GUI dependency)
 livesound/app.py          PySide6 + pyqtgraph user interface, report export
 tests/                    pytest suite driven by synthetic signals
 ios/                      native iPhone/iPad app (SwiftUI + Swift port of the engine)
+android/                  native Android app (Compose + Kotlin port), Tab S10 Ultra layout
 run.bat / build_exe.bat   Windows: run from source / build the .exe
 run_mac.command           macOS: run from source (double-click in Finder)
 build_mac.sh              macOS: build the .app bundle

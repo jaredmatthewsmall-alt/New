@@ -86,9 +86,9 @@ public final class DemoSignal {
         for i in 0..<frames {
             let t = Double(n + i) / sampleRate
             var x = Double(noise[(noisePos + i) % noise.count])
-            x += 0.05 * sin(w * humHz * Double(n + i))
-            x += 0.025 * sin(w * 2 * humHz * Double(n + i))
-            x += 0.012 * sin(w * 3 * humHz * Double(n + i))
+            x += 0.08 * sin(w * humHz * Double(n + i))
+            x += 0.04 * sin(w * 2 * humHz * Double(n + i))
+            x += 0.02 * sin(w * 3 * humHz * Double(n + i))
             let cyc = t.truncatingRemainder(dividingBy: 14)
             if cyc < 8 {
                 let amp = min(0.002 * pow(10, cyc * 1.6 / 8), 0.12)
