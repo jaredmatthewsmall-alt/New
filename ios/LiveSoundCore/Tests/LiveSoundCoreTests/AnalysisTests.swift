@@ -29,7 +29,7 @@ private func noise(_ seconds: Double, level: Float = 0.05, bumps: [Bump] = [], s
     pinkNoise(count: Int(SR * seconds), sampleRate: SR, seed: seed, bumps: bumps).map { level * $0 }
 }
 
-private func add(_ a: [Float], _ f: (Int) -> Double) -> [Float] {
+private func mixIn(_ a: [Float], _ f: (Int) -> Double) -> [Float] {
     a.enumerated().map { $0.element + Float(f($0.offset)) }
 }
 
@@ -114,7 +114,7 @@ final class AnalysisTests: XCTestCase {
     }
 
     func testGrowingFeedbackIsDetectedWithNotchAdvice() {
-        let sig = add(noise(6)) { (i: Int) -> Double in
+        let sig = mixIn(noise(6)) { (i: Int) -> Double in
             0.003 * pow(10, Double(i) / SR * 0.3) * sin(2 * Double.pi * 3150 * Double(i) / SR)
         }
         let (_, recs) = analyze(sig)
@@ -128,7 +128,7 @@ final class AnalysisTests: XCTestCase {
     }
 
     func testShortMusicalNoteWithHarmonicsIsNotFeedback() {
-        let sig = add(noise(2.5)) { (i: Int) -> Double in
+        let sig = mixIn(noise(2.5)) { (i: Int) -> Double in
             var v = 0.0
             for k in 1...4 {
                 let h = Double(k)
@@ -158,14 +158,18 @@ final class AnalysisTests: XCTestCase {
     }
 
     func testMainsHumDetectedAndNotReportedAsFeedback() {
-        let sig = add(noise(6)) { (i: Int) -> Double in
+        let sig = mixIn(noise(6)) { (i: Int) -> Double in
             let t = Double(i) / SR
             return 0.05 * sin(2 * Double.pi * 50 * t) + 0.025 * sin(2 * Double.pi * 100 * t)
         }
         let (an, recs) = analyze(sig)
         XCTAssertEqual(an.hum?.freq, 50)
         XCTAssertTrue(recs.contains { $0.title == "Mains hum at 50 Hz" })
-        XCTAssertFalse(recs.contains { $0.category == "Feedback" && abs(($0.freq ?? 0) - 100) < 10 })
+        let humAsFeedback = recs.contains { (r: Recommendation) -> Bool in
+            let f: Double = r.freq ?? 0
+            return r.category == "Feedback" && abs(f - 100) < 10
+        }
+        XCTAssertFalse(humAsFeedback)
     }
 
     func testClippingAndLowLevel() {

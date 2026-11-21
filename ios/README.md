@@ -5,7 +5,8 @@ to Swift. It listens through the iPhone's microphone (or a USB audio interface w
 measurement mic), draws the spectrum live and tells you what to change: feedback notches,
 muddy or harsh regions, rumble, mains hum and input-level problems.
 
-**Requires:** iOS 17 or later; a Mac with Xcode 15 or later to build and install it.
+**Requires:** iOS 17 or later. To install: a Mac with Xcode 15 or later, **or just a Windows PC**
+(see [Only have a Windows PC?](#only-have-a-windows-pc)).
 
 ## Screens
 
@@ -57,6 +58,48 @@ distribution (Product > Archive).
 
 No iPhone to hand? Pick an iPhone simulator in Xcode. The simulator uses your Mac's
 microphone, or choose **Demo signal** in Settings.
+
+## Only have a Windows PC?
+
+You don't need a Mac. GitHub's Mac build machines compile the app for you on every push,
+and a free Windows tool signs it with your Apple ID and installs it.
+
+### Free: sideload with Sideloadly (free Apple ID, re-install every 7 days)
+
+1. **Get the app file.** On GitHub, open the repository's **Actions** tab, click the latest
+   **Build apps** run, and under *Artifacts* download **LiveSoundAnalyzer-iOS-unsigned-ipa**.
+   Unzip it to get `LiveSoundAnalyzer-unsigned.ipa`.
+2. **Install Apple's drivers.** Install **iTunes** and **iCloud** for Windows *from apple.com*
+   (Sideloadly needs the apple.com versions, not the Microsoft Store ones).
+3. **Install Sideloadly** from https://sideloadly.io and open it.
+4. Plug the iPhone in with a USB cable, unlock it, and tap **Trust This Computer**.
+5. Drag the `.ipa` into Sideloadly, enter your Apple ID, and click **Start**. Enter the
+   two-factor code if asked.
+6. On the iPhone:
+   - **Settings > General > VPN & Device Management**: tap your Apple ID and choose **Trust**.
+   - **Settings > Privacy & Security > Developer Mode**: turn it on and restart (iOS 16 or later).
+7. Open **Live Sound**, press **Start**, and allow the microphone.
+
+Limits with a free Apple ID: the app stops opening after **7 days**, so re-run step 5 to
+refresh it (your settings are kept). You can have at most 3 sideloaded apps at once.
+Sideloadly signs in to Apple with your Apple ID. If you'd rather not give a third-party tool
+your main account, create a separate free Apple ID just for this.
+(AltStore, https://altstore.io, is an alternative that can refresh the app automatically
+over Wi-Fi while your PC is on.)
+
+### Paid: TestFlight (Apple Developer Program, $99/year)
+
+With a paid developer account the whole process can be done from Windows. The CI Mac
+signs the app and uploads it to TestFlight, and you install it with Apple's TestFlight app.
+Builds last 90 days, update automatically, and you can share them with your crew.
+This needs one-time setup: an App Store Connect API key and a distribution certificate,
+both creatable in a web browser, stored as GitHub secrets.
+
+### Other options
+* **Rent a Mac in the cloud** (e.g. MacinCloud, AWS EC2 Mac) by the hour and follow the
+  Xcode steps above over remote desktop.
+* **Borrow a Mac once.** With a paid account you only need it for the first install;
+  after that, TestFlight works on its own.
 
 ## Tips for accurate measurements
 
